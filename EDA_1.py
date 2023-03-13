@@ -14,9 +14,8 @@ data = pd.read_csv(ruta)
 
 #Variables categoricas y numericas
 #data.info() 
-
 #Eliminamos fila completa en la que faltan datos
-#data.dropna(inplace = True) 
+data.dropna(inplace = True) 
 #data.info()
 
 #Columnas irrelevenates
@@ -29,7 +28,22 @@ data = pd.read_csv(ruta)
 #Todas las categoricas tienen mas de 1 subnivel
 
 #Columnas  numericas
-print(data.describe())
-#No hay columnas con std igual a cero por lo que todas son relevantes
+#print(data.describe())
+#No hay columnas con std igual a cero por lo que todas son relevantes 
 
 #Filas repetidas
+
+#print(f'tamaño del set antes de eliminar filas repetidas: {data.shape}')
+data.drop_duplicates(inplace=True)
+#print(f'tamaño del set despues de eliminar filas repetidas: {data.shape}')
+
+#Valores extremos (Outliers)
+cols_num = ['age', 'balance', 'day', 'duration', 'campaign',
+            'pdays', 'previous']
+
+fig, ax = plt.subplots(nrows=7, ncols=1, figsize=(8,30))
+fig.subplots_adjust(hspace=0.5)
+
+for i, col in enumerate(cols_num):
+    sns.boxplot(x=col, data=data, ax=ax[i])
+    ax[i].set_title(col)
