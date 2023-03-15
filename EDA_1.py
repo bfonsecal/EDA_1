@@ -37,9 +37,9 @@ data.dropna(inplace = True)
 data.drop_duplicates(inplace=True)
 #print(f'tamaño del set despues de eliminar filas repetidas: {data.shape}')
 
+#      VARIABLES NUMERICAS
 #Valores extremos (Outliers)
-cols_num = ['age', 'balance', 'day', 'duration', 'campaign',
-            'pdays', 'previous']
+cols_num = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
 
 fig, ax = plt.subplots(nrows=7, ncols=1, figsize=(8,30))
 fig.subplots_adjust(hspace=0.5)
@@ -47,3 +47,69 @@ fig.subplots_adjust(hspace=0.5)
 for i, col in enumerate(cols_num):
     sns.boxplot(x=col, data=data, ax=ax[i])
     ax[i].set_title(col)
+
+#Nos enfocamos en age , duration y previous
+
+#age
+data = data[data['age']<=100]
+#duration
+data = data[data['duration']>0]
+data = data[data['previous']<=100]
+
+print(data.shape)
+#Finalmente tenemos 45.189 filas
+
+#    VARIABLES CATEGORICAS
+cols_cat = ['job','marital', 'education','default','housing','loan','contact','month','poutcome','y']
+
+fig , ax = plt.subplots(nrows=10 , ncols=  1 , figsize =(10,30))
+fig.subplots_adjust(hspace=1)
+
+for i, col in enumerate(cols_cat):
+    sns.countplot(x=col,data=data,ax=ax[i])
+    ax[i].set_title(col)
+    ax[i].set_xticklabels(ax[i].get_xticklabels(),rotation=30)
+
+#todo a minuscula
+for column in data.columns:
+    if column in cols_cat:
+        data[column] = data[column].str.lower()
+
+#Graficamos nuevamente
+
+fig , ax = plt.subplots(nrows=10 , ncols=  1 , figsize =(10,30))
+fig.subplots_adjust(hspace=1)
+
+for i, col in enumerate(cols_cat):
+    sns.countplot(x=col,data=data,ax=ax[i])
+    ax[i].set_title(col)
+    ax[i].set_xticklabels(ax[i].get_xticklabels(),rotation=30)
+   
+#unificamos para cada categoria
+#job: admin. y administrative
+data['job']= data['job'].str.replace('admin.', 'administrative', regex= False)
+#marital : div. y divorced
+data['marital']=data['marital'].str.replace('div.', 'divorced', regex=False)
+#education 
+data['education']=data['education'].str.replace('sec.', 'secondary', regex=False)
+data['education']=data['education'].str.replace('unk', 'unknown', regex=False)
+data['education']=data['education'].str.replace('unknownnown', 'unknown', regex=False)
+#contact
+data['contact']=data['contact'].str.replace('phone', 'telephone', regex=False)
+data['contact']=data['contact'].str.replace('teletelephone', 'telephone', regex=False)
+#poutcome
+data['poutcome']=data['poutcome'].str.replace('unk', 'unknown', regex=False)
+data['poutcome']=data['poutcome'].str.replace('unknownnown', 'unknown', regex=False)
+#Graficamos una ultima vez
+
+
+fig , ax = plt.subplots(nrows=10 , ncols=  1 , figsize =(10,30))
+fig.subplots_adjust(hspace=1)
+
+for i, col in enumerate(cols_cat):
+    sns.countplot(x=col,data=data,ax=ax[i])
+    ax[i].set_title(col)
+    ax[i].set_xticklabels(ax[i].get_xticklabels(),rotation=30)
+   
+#   LISTO TENEMOS LOS DATOS LIMPIOS
+
